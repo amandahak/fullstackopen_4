@@ -1,4 +1,4 @@
-### Add Blog 1
+### post blog 1
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
@@ -7,15 +7,4 @@ Content-Type: application/json
   "author": "John Doe",
   "url": "https://fullstack.example.com",
   "likes": 10
-}
-
-### Add Blog 2
-POST http://localhost:3003/api/blogs
-Content-Type: application/json
-
-{
-  "title": "Understanding JavaScript Closures",
-  "author": "Jane Smith",
-  "url": "https://javascript.info/closures",
-  "likes": 25
 }
