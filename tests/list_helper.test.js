@@ -25,3 +25,62 @@ describe('total likes', () => {
     assert.strictEqual(result, 5)
   })
 })
+
+describe('favorite blog', () => {
+    const blogs = [
+      {
+        title: 'First blog',
+        author: 'Author A',
+        likes: 7
+      },
+      {
+        title: 'Second blog',
+        author: 'Author B',
+        likes: 12
+      },
+      {
+        title: 'Third blog',
+        author: 'Author C',
+        likes: 10
+      }
+    ]
+  
+    test('finds the blog with the most likes', () => {
+      const result = listHelper.favoriteBlog(blogs)
+      const expected = {
+        title: 'Second blog',
+        author: 'Author B',
+        likes: 12
+      }
+      assert.deepStrictEqual(result, expected)
+    })
+  })
+
+  describe('most blogs', () => {
+    const blogs = [
+      {
+        title: 'First blog',
+        author: 'Author A',
+        likes: 7
+      },
+      {
+        title: 'Second blog',
+        author: 'Author B',
+        likes: 12
+      },
+      {
+        title: 'Third blog',
+        author: 'Author A',
+        likes: 10
+      }
+    ]
+  
+    test('finds the author with the most blogs', () => {
+      const result = listHelper.mostBlogs(blogs)
+      const expected = {
+        author: 'Author A',
+        blogs: 2
+      }
+      assert.deepStrictEqual(result, expected)
+    })
+  })
