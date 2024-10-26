@@ -12,10 +12,10 @@ mongoose.connect(config.MONGODB_URI, {
   useUnifiedTopology: true,
 })
   .then(() => {
-    console.log('connected to MongoDB')
+    console.log(`Connected to MongoDB: ${config.MONGODB_URI}`)
   })
   .catch((error) => {
-    console.error('error connecting to MongoDB:', error.message)
+    console.error('Error connecting to MongoDB:', error.message)
   })
 
 app.use(cors())
