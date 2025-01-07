@@ -24,6 +24,7 @@ const requestLogger = (request, response, next) => {
 
   const tokenExtractor = (request, response, next) => {
     const authorization = request.get('authorization')
+    console.log('Authorization header:', authorization)
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
       request.token = authorization.substring(7) // Ota token talteen
     } else {
@@ -31,11 +32,39 @@ const requestLogger = (request, response, next) => {
     }
     next()
   }
+
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
+
+const userExtractor = async (request, response, next) => {
+  try {
+    if (!request.token) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'invalid token' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+    if (!user) {
+      return response.status(404).json({ error: 'user not found' })
+    }
+
+    request.user = user; // Lisätään käyttäjä request-olioon
+    next()
+  } catch (error) {
+    console.error('User extraction error:', error.message)
+    next(error)
+  }
+}
   
   module.exports = {
     requestLogger,
     unknownEndpoint,
     errorHandler,
-    tokenExtractor
+    tokenExtractor,
+    userExtractor
   }
   

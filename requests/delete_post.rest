@@ -1,11 +1,2 @@
-### post blog 1
-POST http://localhost:3003/api/blogs
-Content-Type: application/json
+DELETE http://localhost:3003/api/blogs/677d7415c444f56de92400ca
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMTEiLCJpZCI6IjY3N2Q2NzIyMGY3MjQwNjU2MjkzMTQ5MiIsImlhdCI6MTczNjI3NDk0MywiZXhwIjoxNzM2Mjc4NTQzfQ.2UXHNgu0t6Vq6ylDKDmYRloW-96ZK9QjSyJXF3MYtnw
-
-{
-  "title": "My New Blog3",
-  "author": "Jane Doe",
-  "url": "http://example3.com",
-  "likes": 10
-}

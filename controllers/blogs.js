@@ -5,20 +5,24 @@ const jwt = require('jsonwebtoken')
 const middleware = require('../utils/middleware')
 
 // Blogien lisääminen
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   try {
     const { title, author, url, likes } = request.body
 
-    //Tarkista token ja pura käyttäjän tiedot
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
+    // Hae käyttäjä request-oliosta (userExtractor teki tämän)
+    const user = request.user
+    console.log('Request user:', request.user)
 
-    // Haetaan käyttäjä tokenin perusteella
-    const user = await User.findById(decodedToken.id)
+    // //Tarkista token ja pura käyttäjän tiedot
+    // const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    // if (!decodedToken.id) {
+    //   return response.status(401).json({ error: 'token missing or invalid' })
+    // }
+
+    // // Haetaan käyttäjä tokenin perusteella
+    // const user = await User.findById(decodedToken.id)
     if (!user) {
-      return response.status(404).json({ error: 'User not found' })
+       return response.status(404).json({ error: 'user not authenticated' })
     }
 
     // Tarkistetaan, että title ja url on annettu
@@ -61,13 +65,14 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.delete('/:id', async (request, response) => {
   try {
     const { id } = request.params
+    const user = request.user // Haetaan käyttäjä user-oliosta
 
-    //Tarkista token ja pura käyttäjän tiedot
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-    
+    // //Tarkista token ja pura käyttäjän tiedot
+    // const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    // if (!decodedToken.id) {
+    //   return response.status(401).json({ error: 'token missing or invalid' })
+    // }
+
     // Haetaan poistettava blogi tietokannasta
     const blog = await Blog.findById(id)
     if (!blog) {
@@ -75,7 +80,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     }
 
     // Varmistetaan, että poistaja on blogin omistaja
-    if (blog.user.toString() !== decodedToken.id) {
+    if (blog.user.toString() !== user.id.toString()) {
       return response.status(403).json({ error: 'only the creator can delete the blog' })
     }
 
