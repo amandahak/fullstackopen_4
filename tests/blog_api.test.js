@@ -86,7 +86,7 @@ test('if likes is missing from request, it defaults to 0', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  // tarkista: lisätyn blogin likes-kenttä on 0
+  //tarkista: lisätyn blogin likes-kenttä on 0
   assert.strictEqual(response.body.likes, 0)
 })
 

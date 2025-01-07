@@ -1,10 +1,12 @@
-const bcrypt = require('bcrypt')
-const usersRouter = require('express').Router()
-const User = require('../models/user')
+const bcrypt = require('bcrypt') // Salasanojen hashaukseen
+const usersRouter = require('express').Router() // Reittien luontiin
+const User = require('../models/user') // käyttäjä-malli MongoDB:lle
 
+//POST-reitti: Luo uusi käyttäjä
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
+  //Onko salasana annettu ja onko se tarpeeksi pitkä
   if (!password) {
     return response.status(400).json({ error: 'password is required' })
   }
@@ -13,9 +15,11 @@ usersRouter.post('/', async (request, response) => {
     return response.status(400).json({ error: 'password must be at least 3 characters long' })
   }
 
-  const saltRounds = 10
+  //Salasanan hashaus
+  const saltRounds = 10 // Hashauksen vahvuus
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
+  //Luodaan uusi käyttäjä (mongoDB-mallin perusteella)
   const user = new User({
     username,
     name,
@@ -23,6 +27,7 @@ usersRouter.post('/', async (request, response) => {
   })
 
   try {
+    //Tallennetaan käyttäjä MongoDB:hen
     const savedUser = await user.save()
     response.status(201).json(savedUser)
   } catch (error) {

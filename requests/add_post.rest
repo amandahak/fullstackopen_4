@@ -3,8 +3,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Introduction to Fullstack Development",
-  "author": "John Doe",
-  "url": "https://fullstack.example.com",
-  "likes": 10
+  "title": "Test Blog2",
+  "author": "Author Name",
+  "url": "http://example2.com",
+  "likes": 5,
+  "username": "testuser"
 }
