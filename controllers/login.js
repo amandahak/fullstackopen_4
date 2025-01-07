@@ -1,27 +1,46 @@
-const express = require('express')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const express = require('express')
 const loginRouter = express.Router()
 
 loginRouter.post('/', async (request, response) => {
-  const { username, password } = request.body
-  const user = await User.findOne({ username })
+  try {
+    console.log('Request body:', request.body)
+    const { username, password } = request.body
+        
+    //Etsi käyttäjä tietokannasta käyttäjänimen perusteella
+    const user = await User.findOne({ username })
+    console.log('Login attempt for username:', username)
+    
+    if (!user) {
+      return response.status(401).json({ error: 'invalid username or password' })
+    }
 
-  const passwordCorrect = user === null
-    ? false
-    : await bcrypt.compare(password, user.passwordHash)
+    //Vertaile salasanaa tietokannan hashin kanssa
+    const passwordCorrect = await bcrypt.compare(password, user.passwordHash)
+    console.log('Password comparison result:', passwordCorrect)
 
-  if (!(user && passwordCorrect)) {
-    return response.status(401).json({ error: 'invalid username or password' })
-  }
+    if (!passwordCorrect) {
+      return response.status(401).json({ error: 'invalid username or password' })
+    }
+    
+    //Luo token payloadiin (käyttäjän id ja username)
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    }
 
-  const userForToken = {
-    username: user.username,
-    id: user._id,
-  }
+    //Allekirjoita token ympäristömuuttujalla (SECRET)
+    const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: '1h' })
 
-  const token = jwt.sign(userForToken, process.env.SECRET)
-  response.status(200).send({ token, username: user.username, name: user.name })
+    //Palauta token ympäristömuuttujalla
+    response.status(200).send({ token, username: user.username, name: user.name })
+  } catch (error) {
+    console.error('Login error: ', error.message)
+    response.status(500).json({ error: 'internal server error' })
+    
+  } 
 })
 
 module.exports = loginRouter
