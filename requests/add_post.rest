@@ -1,9 +1,12 @@
 ### post blog 1
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMTEiLCJpZCI6IjY3N2Q2NzIyMGY3MjQwNjU2MjkzMTQ5MiIsImlhdCI6MTczNjI3MzE3MywiZXhwIjoxNzM2Mjc2NzczfQ.FSgWUZYM0nfD0eMDnfa5dedEpT_gE9wHHbq7e3TwiLY
+
+
 
 {
-  "title": "My New Blog",
+  "title": "My New Blog2",
   "author": "Jane Doe",
   "url": "http://example3.com",
   "likes": 10

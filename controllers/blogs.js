@@ -2,6 +2,7 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
 
 // Blogien lisääminen
 blogsRouter.post('/', async (request, response) => {
@@ -32,7 +33,7 @@ blogsRouter.post('/', async (request, response) => {
       url,
       likes: likes || 0, // Oletuksena 0 tykkäystä, jos kenttää ei ole
       user: user._id, // Liitetään käyttäjä blogiin
-    });
+    })
 
     // Tallennetaan blogi tietokantaan
     const savedBlog = await blog.save()
@@ -60,11 +61,13 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.delete('/:id', async (request, response) => {
   try {
     const { id } = request.params
+
     //Tarkista token ja pura käyttäjän tiedot
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
+    
     // Haetaan poistettava blogi tietokannasta
     const blog = await Blog.findById(id)
     if (!blog) {

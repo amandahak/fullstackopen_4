@@ -21,10 +21,21 @@ const requestLogger = (request, response, next) => {
   
     next(error)
   }
+
+  const tokenExtractor = (request, response, next) => {
+    const authorization = request.get('authorization')
+    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+      request.token = authorization.substring(7) // Ota token talteen
+    } else {
+      request.token = null // Jos header puuttuu, aseta token nulliksi
+    }
+    next()
+  }
   
   module.exports = {
     requestLogger,
     unknownEndpoint,
-    errorHandler
+    errorHandler,
+    tokenExtractor
   }
   
