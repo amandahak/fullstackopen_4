@@ -13,14 +13,6 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
     const user = request.user
     console.log('Request user:', request.user)
 
-    // //Tarkista token ja pura käyttäjän tiedot
-    // const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    // if (!decodedToken.id) {
-    //   return response.status(401).json({ error: 'token missing or invalid' })
-    // }
-
-    // // Haetaan käyttäjä tokenin perusteella
-    // const user = await User.findById(decodedToken.id)
     if (!user) {
        return response.status(404).json({ error: 'user not authenticated' })
     }
@@ -46,8 +38,9 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
 
-    // Palautetaan tallennettu blogi vastauksena
-    response.status(201).json(savedBlog)
+    // Palautetaan tallennettu blogi populaationa
+    const populatedBlog = await Blog.findById(savedBlog._id).populate('user', { username: 1, name: 1 })
+    response.status(201).json(populatedBlog)
   } catch (error) {
     console.error('Blog creation error: ', error.message)
     response.status(500).json({ error: 'internal server error' })
